@@ -259,5 +259,4 @@ def search_db(filename, search_index=None, search_value=None):
     else:
         return "karbar morde nazar peyda nashod!!!\nvordi bayad add bashad"
 
-
 main()
