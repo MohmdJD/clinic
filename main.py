@@ -2,7 +2,7 @@
 # + no, and you're not like other patients
 import re
 from enum import Enum
-
+from colorama import Fore, Style
 
 def main():
     print(
@@ -19,10 +19,12 @@ def main():
             mariz()
 
         case '3':
-            exit("roze khobi dashte bashid")
+            exit(Style.BRIGHT + "roze khobi dashte bashid 🤍" + Style.RESET_ALL)
 
         case _:
-            print("gozineh monaseb ro entekhab konid")
+            print(Fore.RED + "gozineh monaseb ro entekhab konid" + Fore.RESET)
+            main()
+
 
 
 def doctor():
@@ -39,39 +41,39 @@ def doctor():
                 if total_checker("integer", isNew):
                     datas = isNew + ","
                 else:
-                    print("code pezeshk bayad add sahih bashd")
+                    print(Fore.RED + "code pezeshk bayad add sahih bashd\n" + Fore.RESET)
                     doctor()
 
                 name = str(input("\nname pezesh ra vard konid:\t"))
                 if total_checker("string", name):
                     datas += name + ","
                 else:
-                    print("name pezesh bayad shamel horof bashad bashad")
+                    print(Fore.RED + "name pezesh bayad shamel horof bashad bashad\n" + Fore.RESET)
                     doctor()
 
                 phone = str(input("\nmobile pezesh ra vard konid:\t"))
                 if total_checker("mobile", phone):
                     datas += phone + ","
                 else:
-                    print("shomare mobile bayad 11 raghami bashad va ba 09 shoro shavad")
+                    print(Fore.RED + "shomare mobile bayad 11 raghami bashad va ba 09 shoro shavad" + Fore.RESET)
                     doctor()
 
                 specialist = str(input("\ntakhasos pezesh ra vard konid:\n1. cardiologist\n2. optometrist\n3. pediatrician\n4. general\n"))
                 if specialist in Specialist._value2member_map_:
                     datas += Specialist._value2member_map_[specialist].name
                 else:
-                    print("takhasos pezesh bayad az bein gozineh haye zir bashad\n")
+                    print(Fore.RED + "takhasos pezesh bayad az bein gozineh haye zir bashad\n" + Fore.RESET)
                     for i in Specialist:
                         print(i.name)
                     doctor()
 
                 TouchMyfile("doctors.txt", f"{datas}\n")
 
-                print("\npezeshke jadid ba movafaghit ezafe shod !")
+                print(Fore.LIGHTGREEN_EX +"\npezeshke jadid ba movafaghit ezafe shod !\n" + Fore.RESET)
                 doctor()
 
             else:
-                print("pezeshke morde nazar mojod mibashd")
+                print(Fore.RED + "pezeshke morde nazar mojod mibashd\n" + Fore.RESET)
                 doctor()
 
         case '2':
@@ -82,15 +84,26 @@ def doctor():
 
         case '4':
             code = str(input("\ncode pezesh ra vard konid:\t"))
-            print("\n")
-            headers = ["code", "name", "mobile", "specialist"]
-            results = search_db("doctors.txt", search_value=code)
-            for result in results:
-                values = result.split(',')
-                for header, value in zip(headers, values):
-                    print(f"-{header}: {value}")
-                    print("\n")
-            doctor()
+            if total_checker("integer", code):
+                print("\n")
+                results = search_db("doctors.txt", search_value=code)
+                if results:
+                    headers = ["code", "name", "mobile", "specialist"]
+                    for result in results:
+                        values = result.split(',')
+                        for header, value in zip(headers, values):
+                            print(Fore.LIGHTCYAN_EX + f"-{header}: " + Fore.RESET + Style.DIM + Fore.LIGHTRED_EX + f"{value}" + Style.RESET_ALL + Fore.RESET)
+                            print("\n")
+
+                    doctor()
+
+                else:
+                    print(Fore.MAGENTA + Style.BRIGHT + "pezeshk mojod nist\n" + Fore.RESET + Style.RESET_ALL)
+                    doctor()
+
+            else:
+                print(Fore.RED + "code pezeshk bayad add sahih bashd\n" + Fore.RESET)
+                doctor()
 
         case '5':
             pretty_print_lists("doctors.txt")
@@ -103,7 +116,7 @@ def doctor():
             main()
 
         case _:
-            print("gozineh monaseb ro entekhab konid")
+            print(Fore.RED + "gozineh monaseb ro entekhab konid" + Fore.RESET)
             doctor()
 
 
@@ -160,7 +173,7 @@ def mariz():
             main()
 
         case _:
-            print("gozineh monaseb ro entekhab konid")
+            print(Fore.RED + "gozineh monaseb ro entekhab konid" + Fore.RESET)
             mariz()
 
 
@@ -191,6 +204,7 @@ def total_checker(type, value):
 
     if re.match(patterns[type], value):
         return True
+
 
 class Specialist(Enum):
     cardiologist = "1"  # heart
@@ -234,15 +248,9 @@ def search_db(filename, search_index=None, search_value=None):
     results = []
 
     if search_index is not None and search_value is not None:
-        for line in lines:
-            values = line.strip().split(',')
-            if values[search_index] == search_value:
-                results.append(line.strip())
+        results = [line for line in lines if line.strip().split(',')[search_index] == search_value]
     elif search_value is not None:
-        for line in lines:
-            values = line.strip().split(',')
-            if search_value in values:
-                results.append(line.strip())
+        results = [line for line in lines if search_value in line.strip().split(',')]
     elif search_index is not None:
         for line in lines:
             values = line.strip().split(',')
@@ -251,7 +259,6 @@ def search_db(filename, search_index=None, search_value=None):
 
     if results:
         return results
-    else:
-        return "karbar morde nazar peyda nashod!!!\nvordi bayad add bashad"
+
 
 main()
