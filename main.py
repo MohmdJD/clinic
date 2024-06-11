@@ -19,31 +19,44 @@ def main():
             mariz()
 
         case '3':
-            main()
+            exit("roze khobi dashte bashid")
 
         case _:
             print("gozineh monaseb ro entekhab konid")
 
 
 def doctor():
+    global datas
     print("be menu pezeshkan khosh omadid\ngozineh morde nazre khod ra entekhab konid")
     print(
-        "\n\t\t1- ezafe kardn pezeshk jadid\n\t\t2- hazf pezeshk\n\t\t3- viraish pezeshk\n\t\t4- joste'joi pezeshk\n\t\t5- list pezeshk\n\t\t6- joste'joi takhasos\n\t\t7- exit")
+        "\n\t\t1- ezafe kardn pezeshk jadid\n\t\t2- hazf pezeshk\n\t\t3- viraish pezeshk\n\t\t4- joste'joi pezeshk\n\t\t5- list pezeshk\n\t\t6- joste'joi takhasos\n\t\t7- main menu↩")
     Doctor_Option = input()
     match Doctor_Option:
         case '1':
             isNew = str(input("pezeshk jadid\n\ncode pezesh ra vard konid:\t"))
             if findIsUser("doctors.txt", isNew) == "no":
-                datas = isNew + ","
-                datas += str(input("\nname pezesh ra vard konid:\t")) + ","
+
+                if total_checker("integer", isNew):
+                    datas = isNew + ","
+                else:
+                    print("code pezeshk bayad add sahih bashd")
+                    doctor()
+
+                name = str(input("\nname pezesh ra vard konid:\t"))
+                if total_checker("string", name):
+                    datas += name + ","
+                else:
+                    print("name pezesh bayad shamel horof bashad bashad")
+                    doctor()
+
                 phone = str(input("\nmobile pezesh ra vard konid:\t"))
-                if check_mobile(phone) == True:
+                if total_checker("mobile", phone):
                     datas += phone + ","
                 else:
                     print("shomare mobile bayad 11 raghami bashad va ba 09 shoro shavad")
                     doctor()
-                specialist = str(input(
-                    "\ntakhasos pezesh ra vard konid:\n1. cardiologist\n2. optometrist\n3. pediatrician\n4. general\n"))
+
+                specialist = str(input("\ntakhasos pezesh ra vard konid:\n1. cardiologist\n2. optometrist\n3. pediatrician\n4. general\n"))
                 if specialist in Specialist._value2member_map_:
                     datas += Specialist._value2member_map_[specialist].name
                 else:
@@ -97,18 +110,25 @@ def doctor():
 def mariz():
     print("be menu mariz khosh omadid\ngozineh morde nazre khod ra entekhab konid")
     print(
-        "\n\t\t1- ezafe kardn bimar\n\t\t2- hazfe bimar\n\t\t3- viraish etelaate bimar\n\t\t4- joste'joi bimarhaye ye doctor\n\t\t5- list bimaran\n\t\t6- exit")
+        "\n\t\t1- ezafe kardn bimar\n\t\t2- hazfe bimar\n\t\t3- viraish etelaate bimar\n\t\t4- joste'joi bimarhaye ye doctor\n\t\t5- list bimaran\n\t\t6- main menu↩")
 
     Mariz_gozineh = input()
 
     match Mariz_gozineh:
         case '1':
             isNew = str(input("bimar jadid\n\ncode meli bimar ra vard konid:\t"))
-            if check_code_meli(isNew) == True:
+            if total_checker("code_meli", isNew):
                 if findIsUser("marizan.txt", isNew) == "no":
                     datas = isNew + ","
-                    datas += (str(input("\nname bimar ra vard konid:\t"))) + ","
-                    datas += (str(input("\npezeshke bimar ra vard konid:\t")))
+
+                    name = str(input("\nname bimar ra vard konid:\t"))
+                    if total_checker("string", name):
+                        datas += name + ","
+                    else:
+                        print("name bimar bayad shamel horof bashad")
+                        mariz()
+
+                    datas += str(input("\npezeshke bimar ra vard konid:\t"))
 
                     TouchMyfile("marizan.txt", f"{datas}\n")
 
@@ -134,6 +154,7 @@ def mariz():
 
         case '5':
             pretty_print_lists("marizan.txt")
+            mariz()
 
         case '6':
             main()
@@ -144,7 +165,8 @@ def mariz():
 
 
 def TouchMyfile(Path, datas):
-    file = open(Path, "a")
+    file = open(Path, "a+")
+    file.seek(0)
     file.write(datas)
     file.close()
 
@@ -161,15 +183,15 @@ def findIsUser(file, value):
     return "no"
 
 
-def check_code_meli(code):
-    pattern = r'^\d{10}$'
-    if re.match(pattern, code):
-        return True
+def total_checker(type, value):
+    patterns = {
+        'code_meli': r'^\d{10}$',
+        'mobile': r'^09\d{9}$',
+        'integer': r'^\d+$',
+        'string': r'^[a-zA-Z\s\-\'\.]+$'
+    }
 
-
-def check_mobile(number):
-    pattern = r'^09\d{9}$'
-    if re.match(pattern, number):
+    if re.match(patterns[type], value):
         return True
 
 
@@ -181,6 +203,7 @@ class Specialist(Enum):
 
 
 def pretty_print_lists(filename):
+    global headers, column_widths
     with open(filename, "r") as file:
         lines = file.readlines()
 
