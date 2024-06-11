@@ -5,11 +5,10 @@ from enum import Enum
 from colorama import Fore, Style
 
 def main():
-    print(
-        f"\n\t\t{4 * '-'}be matab khosh amadid{4 * '-'}\n{8 * '-'}gozineh morede nazar khod ra entekhab konid{8 * '-'}")
+    print(f"\n\t\t{4 * '-'}be matab khosh amadid{4 * '-'}\n{8 * '-'}gozineh morede nazar khod ra entekhab konid{8 * '-'}")
     print("\n\t\t1- pezeshkan\n\t\t2- bimaran\n\t\t3- exit")
 
-    Which_Option = input(">")
+    Which_Option = input(Fore.LIGHTYELLOW_EX + ">" + Fore.RESET)
 
     match Which_Option:
         case '1':
@@ -29,9 +28,8 @@ def main():
 
 def doctor():
     global datas
-    print("be menu pezeshkan khosh omadid\ngozineh morde nazre khod ra entekhab konid")
-    print(
-        "\n\t\t1- ezafe kardn pezeshk jadid\n\t\t2- hazf pezeshk\n\t\t3- viraish pezeshk\n\t\t4- joste'joi pezeshk\n\t\t5- list pezeshk\n\t\t6- joste'joi takhasos\n\t\t7- main menu↩")
+    print("\nbe menu pezeshkan khosh omadid\ngozineh morde nazre khod ra entekhab konid")
+    print("\n\t\t1- ezafe kardn pezeshk jadid\n\t\t2- hazf pezeshk\n\t\t3- viraish pezeshk\n\t\t4- joste'joi pezeshk\n\t\t5- list pezeshk\n\t\t6- joste'joi takhasos\n\t\t7- main menu↩")
     Doctor_Option = input()
     match Doctor_Option:
         case '1':
@@ -41,30 +39,30 @@ def doctor():
                 if total_checker("integer", isNew):
                     datas = isNew + ","
                 else:
-                    print(Fore.RED + "code pezeshk bayad add sahih bashd\n" + Fore.RESET)
+                    print(Fore.RED + "\ncode pezeshk bayad add sahih bashd\n" + Fore.RESET)
                     doctor()
 
                 name = str(input("\nname pezesh ra vard konid:\t"))
                 if total_checker("string", name):
                     datas += name + ","
                 else:
-                    print(Fore.RED + "name pezesh bayad shamel horof bashad bashad\n" + Fore.RESET)
+                    print(Fore.RED + "\nname pezesh bayad shamel horof bashad bashad\n" + Fore.RESET)
                     doctor()
 
                 phone = str(input("\nmobile pezesh ra vard konid:\t"))
                 if total_checker("mobile", phone):
                     datas += phone + ","
                 else:
-                    print(Fore.RED + "shomare mobile bayad 11 raghami bashad va ba 09 shoro shavad" + Fore.RESET)
+                    print(Fore.RED + "\nshomare mobile bayad 11 raghami bashad va ba 09 shoro shavad\n" + Fore.RESET)
                     doctor()
 
                 specialist = str(input("\ntakhasos pezesh ra vard konid:\n1. cardiologist\n2. optometrist\n3. pediatrician\n4. general\n"))
                 if specialist in Specialist._value2member_map_:
                     datas += Specialist._value2member_map_[specialist].name
                 else:
-                    print(Fore.RED + "takhasos pezesh bayad az bein gozineh haye zir bashad\n" + Fore.RESET)
+                    print(Fore.RED + "\ntakhasos pezesh bayad az bein gozineh haye zir bashad\n" + Fore.RESET)
                     for i in Specialist:
-                        print(i.name)
+                        print(Fore.LIGHTBLUE_EX + i.name + Fore.RESET)
                     doctor()
 
                 TouchMyfile("doctors.txt", f"{datas}\n")
@@ -73,7 +71,7 @@ def doctor():
                 doctor()
 
             else:
-                print(Fore.RED + "pezeshke morde nazar mojod mibashd\n" + Fore.RESET)
+                print(Fore.MAGENTA + "\npezeshke morde nazar mojod mibashd\n" + Fore.RESET)
                 doctor()
 
         case '2':
@@ -98,32 +96,46 @@ def doctor():
                     doctor()
 
                 else:
-                    print(Fore.MAGENTA + Style.BRIGHT + "pezeshk mojod nist\n" + Fore.RESET + Style.RESET_ALL)
+                    print(Fore.MAGENTA + Style.BRIGHT + "\npezeshk mojod nist\n" + Fore.RESET + Style.RESET_ALL)
                     doctor()
 
             else:
-                print(Fore.RED + "code pezeshk bayad add sahih bashd\n" + Fore.RESET)
+                print(Fore.RED + "\ncode pezeshk bayad add sahih bashd\n" + Fore.RESET)
                 doctor()
 
         case '5':
-            pretty_print_lists("doctors.txt")
+            pretty_print_lists_and_search(filename="doctors.txt")
+            print("\n")
             doctor()
 
         case '6':
-            print("serch takhasos")
+            specialist = str(input("\ntakhasos pezesh ra vard konid:\n1. cardiologist\n2. optometrist\n3. pediatrician\n4. general\n"))
+            if specialist in Specialist._value2member_map_:
+                specialist_name = Specialist._value2member_map_[specialist].name
+                results = search_db("doctors.txt", search_value=specialist_name)
+                if results:
+                    print(Style.DIM + Fore.LIGHTRED_EX + f"\n{specialist_name}" + Fore.RESET + Style.RESET_ALL + Fore.LIGHTCYAN_EX + " list:\n" + Fore.RESET)
+                    pretty_print_lists_and_search(array=results)
+                    print("\n")
+                    doctor()
+                else:
+                    print(Fore.LIGHTCYAN_EX + "\npezeshke " + Fore.RESET + Style.DIM + Fore.LIGHTRED_EX + f"{specialist_name}" + Fore.RESET + Style.RESET_ALL + Fore.LIGHTCYAN_EX + " mojod nist\n" + Fore.RESET)
+                    doctor()
+            else:
+                print(Fore.RED + "\ngozineh monaseb ro entekhab konid\n" + Fore.RESET)
+                doctor()
 
         case '7':
             main()
 
         case _:
-            print(Fore.RED + "gozineh monaseb ro entekhab konid" + Fore.RESET)
+            print(Fore.RED + "\ngozineh monaseb ro entekhab konid\n" + Fore.RESET)
             doctor()
 
 
 def mariz():
-    print("be menu mariz khosh omadid\ngozineh morde nazre khod ra entekhab konid")
-    print(
-        "\n\t\t1- ezafe kardn bimar\n\t\t2- hazfe bimar\n\t\t3- viraish etelaate bimar\n\t\t4- joste'joi bimarhaye ye doctor\n\t\t5- list bimaran\n\t\t6- main menu↩")
+    print("\nbe menu mariz khosh omadid\ngozineh morde nazre khod ra entekhab konid")
+    print("\n\t\t1- ezafe kardn bimar\n\t\t2- hazfe bimar\n\t\t3- viraish etelaate bimar\n\t\t4- joste'joi bimarhaye ye doctor\n\t\t5- list bimaran\n\t\t6- main menu↩")
 
     Mariz_gozineh = input()
 
@@ -138,22 +150,22 @@ def mariz():
                     if total_checker("string", name):
                         datas += name + ","
                     else:
-                        print("name bimar bayad shamel horof bashad")
+                        print(Fore.RED + "name bimar bayad shamel horof bashad" + Fore.RESET)
                         mariz()
 
                     datas += str(input("\npezeshke bimar ra vard konid:\t"))
 
                     TouchMyfile("marizan.txt", f"{datas}\n")
 
-                    print("\nbimar jadid ba movafaghit ezafe shod !")
+                    print(Fore.LIGHTGREEN_EX + "\nbimar jadid ba movafaghit ezafe shod !\n" + Fore.RESET)
                     mariz()
 
                 else:
-                    print("bimar morde nazar mojod mibashd")
+                    print(Fore.MAGENTA + "\nbimar morde nazar mojod mibashd\n" + Fore.RESET)
                     mariz()
 
             else:
-                print("code meli bayad adade 10 raghami bashad")
+                print(Fore.RED + "\ncode meli bayad adade 10 raghami bashad\n" + Fore.RESET)
                 mariz()
 
         case '2':
@@ -166,14 +178,15 @@ def mariz():
             print("serch marizhaye doctor")
 
         case '5':
-            pretty_print_lists("marizan.txt")
+            pretty_print_lists_and_search(filename="marizan.txt")
+            print("\n")
             mariz()
 
         case '6':
             main()
 
         case _:
-            print(Fore.RED + "gozineh monaseb ro entekhab konid" + Fore.RESET)
+            print(Fore.RED + "\ngozineh monaseb ro entekhab konid\n" + Fore.RESET)
             mariz()
 
 
@@ -205,41 +218,11 @@ def total_checker(type, value):
     if re.match(patterns[type], value):
         return True
 
-
 class Specialist(Enum):
     cardiologist = "1"  # heart
     optometrist = "2"  # eye
     pediatrician = "3"  # children
     general = "4"  # omomi
-
-def pretty_print_lists(filename):
-    global headers, column_widths
-    with open(filename, "r") as file:
-        lines = file.readlines()
-
-    if filename == "marizan.txt":
-        headers = ["No", "code", "name", "doctor"]
-        column_widths = [4, 12, 14, 6]
-
-    elif filename == "doctors.txt":
-        headers = ["No", "code", "name", "mobile", "specialist"]
-        column_widths = [4, 6, 14, 14, 12]
-
-    separator = " | "
-    header_line = separator.join(f"{header:{width}}" for header, width in zip(headers, column_widths))
-    divider_line = "-" * len(header_line)
-
-    print(f"{filename.split('.')[0]} file list:")
-    print(divider_line)
-    print(header_line)
-    print(divider_line)
-
-    for idx, line in enumerate(lines, start=1):
-        values = line.strip().split(',')
-        values.insert(0, str(idx))  # Insert the row number at the beginning
-        formatted_line = separator.join(f"{value:{width}}" for value, width in zip(values, column_widths))
-        print(formatted_line)
-        print(divider_line)
 
 def search_db(filename, search_index=None, search_value=None):
     with open(filename, "r") as file:
@@ -260,5 +243,36 @@ def search_db(filename, search_index=None, search_value=None):
     if results:
         return results
 
+def pretty_print_lists_and_search(filename=None, array=None):
+    if filename:
+        with open(filename, "r") as file:
+            file_lines = file.readlines()
+        file_lines = sorted(file_lines, key=lambda x: x.strip().split(',')[2])
+    else:
+        file_lines = array
+
+    if filename == "marizan.txt":
+        headers = ["No", "code", "name", "doctor"]
+        column_widths = [4, 12, 14, 6]
+    elif filename == "doctors.txt" or (array and not filename):
+        headers = ["No", "code", "name", "mobile", "specialist"]
+        column_widths = [4, 12, 14, 14, 12]
+
+    separator = " | "
+    header_line = separator.join(f"{header:{width}}" for header, width in zip(headers, column_widths))
+    divider_line = "-" * len(header_line)
+
+    if filename:
+        print(f"{filename.split('.')[0]} file list:")
+    print(divider_line)
+    print(header_line)
+    print(divider_line)
+
+    for idx, line in enumerate(file_lines, start=1):
+        values = line.strip().split(',')
+        values.insert(0, str(idx))
+        formatted_line = separator.join(f"{value:{width}}" for value, width in zip(values, column_widths))
+        print(formatted_line)
+        print(divider_line)
 
 main()
