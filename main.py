@@ -170,7 +170,6 @@ def TouchMyfile(Path, datas):
     file.write(datas)
     file.close()
 
-
 def findIsUser(file, value):
     with open(file, "r") as file:
         lines = file.readlines()
@@ -181,7 +180,6 @@ def findIsUser(file, value):
             return "yes"
 
     return "no"
-
 
 def total_checker(type, value):
     patterns = {
@@ -194,13 +192,11 @@ def total_checker(type, value):
     if re.match(patterns[type], value):
         return True
 
-
 class Specialist(Enum):
     cardiologist = "1"  # heart
     optometrist = "2"  # eye
     pediatrician = "3"  # children
     general = "4"  # omomi
-
 
 def pretty_print_lists(filename):
     global headers, column_widths
@@ -230,7 +226,6 @@ def pretty_print_lists(filename):
         formatted_line = separator.join(f"{value:{width}}" for value, width in zip(values, column_widths))
         print(formatted_line)
         print(divider_line)
-
 
 def search_db(filename, search_index=None, search_value=None):
     with open(filename, "r") as file:
