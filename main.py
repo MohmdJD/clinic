@@ -75,7 +75,32 @@ def doctor():
                 doctor()
 
         case '2':
-            print("edit pezeshk")
+            code = str(input("\ncode pezesh ra vard konid:\t"))
+            if total_checker("integer", code):
+                results = search_db("doctors.txt", search_value=code)
+                if results:
+                    with open("doctors.txt", "r+") as file:
+                        lines = file.readlines()
+                    lines = list(filter(lambda line: line not in results, lines))
+                    with open("doctors.txt", "w+") as file:
+                        file.writelines(lines)
+
+                    headers = ["code", "name", "mobile", "specialist"]
+                    for result in results:
+                        values = result.split(',')
+                        for header, value in zip(headers, values):
+                            print(Fore.LIGHTCYAN_EX + f"-{header}: " + Fore.RESET + Style.DIM + Fore.LIGHTRED_EX + f"{value}" + Style.RESET_ALL + Fore.RESET)
+                    print("\n")
+                    print(Fore.LIGHTGREEN_EX + "\npezeshk hazf shod\n" + Fore.RESET)
+                    doctor()
+
+                else:
+                    print(Fore.MAGENTA + "\npezeshk mojod nist\n" + Fore.RESET)
+                    doctor()
+
+            else:
+                print(Fore.RED + "\ncode pezeshk bayad add sahih bashd\n" + Fore.RESET)
+                doctor()
 
         case '3':
             print("delete pezeshk")
@@ -169,7 +194,32 @@ def mariz():
                 mariz()
 
         case '2':
-            print("edit mariz")
+            code = str(input("\ncode meli bimar ra vard konid:\t"))
+            if total_checker("code_meli", code):
+                results = search_db("marizan.txt", search_value=code)
+                if results:
+                    with open("marizan.txt", "r+") as file:
+                        lines = file.readlines()
+                    lines = list(filter(lambda line: line not in results, lines))
+                    with open("marizan.txt", "w+") as file:
+                        file.writelines(lines)
+
+                    headers = ["code", "name", "doctor"]
+                    for result in results:
+                        values = result.split(',')
+                        for header, value in zip(headers, values):
+                            print(Fore.LIGHTCYAN_EX + f"-{header}: " + Fore.RESET + Style.DIM + Fore.LIGHTRED_EX + f"{value}" + Style.RESET_ALL + Fore.RESET)
+                    print("\n")
+                    print(Fore.LIGHTGREEN_EX + "\nbimar hazf shod\n" + Fore.RESET)
+                    mariz()
+
+                else:
+                    print(Fore.MAGENTA + "\nbimar mojod nist\n" + Fore.RESET)
+                    mariz()
+
+            else:
+                print(Fore.RED + "\ncode meli bayad adade 10 raghami bashad\n" + Fore.RESET)
+                mariz()
 
         case '3':
             print("delete mariz")
