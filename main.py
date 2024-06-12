@@ -103,7 +103,54 @@ def doctor():
                 doctor()
 
         case '3':
-            print("delete pezeshk")
+            code = str(input("\ncode pezesh ra vard konid:\t"))
+            if total_checker("integer", code):
+                results = search_db("doctors.txt", search_value=code)
+
+                if results:
+                    with open("doctors.txt", "r+") as file:
+                        lines = file.readlines()
+                    lines = list(filter(lambda line: line not in results, lines))
+                    with open("doctors.txt", "w+") as file:
+                        file.writelines(lines)
+
+                    datas = code + ","
+                    name = str(input("\nname jadide pezesh ra vard konid:\t"))
+                    if total_checker("string", name):
+                        datas += name + ","
+                    else:
+                        print(Fore.RED + "\nname pezesh bayad shamel horof bashad bashad\n" + Fore.RESET)
+                        doctor()
+
+                    phone = str(input("\nmobile jadid pezesh ra vard konid:\t"))
+                    if total_checker("mobile", phone):
+                        datas += phone + ","
+                    else:
+                        print(Fore.RED + "\nshomare mobile bayad 11 raghami bashad va ba 09 shoro shavad\n" + Fore.RESET)
+                        doctor()
+
+                    specialist = str(input("\ntakhasos jadid pezesh ra vard konid:\n1. cardiologist\n2. optometrist\n3. pediatrician\n4. general\n"))
+                    if specialist in Specialist._value2member_map_:
+                        datas += Specialist._value2member_map_[specialist].name
+                    else:
+                        print(Fore.RED + "\ntakhasos pezesh bayad az bein gozineh haye zir bashad\n" + Fore.RESET)
+                        for i in Specialist:
+                            print(Fore.LIGHTBLUE_EX + i.name + Fore.RESET)
+                        doctor()
+
+                    TouchMyfile("doctors.txt", f"\n{datas}\n")
+
+                    empty_lines("doctors.txt")
+
+                    doctor()
+
+                else:
+                    print(Fore.MAGENTA + "\npezeshk mojod nist\n" + Fore.RESET)
+                    doctor()
+
+            else:
+                print(Fore.RED + "\ncode pezeshk bayad add sahih bashd\n" + Fore.RESET)
+                doctor()
 
         case '4':
             code = str(input("\ncode pezesh ra vard konid:\t"))
@@ -325,4 +372,16 @@ def pretty_print_lists_and_search(filename=None, array=None):
         print(formatted_line)
         print(divider_line)
 
+def empty_lines(filename):
+    if filename:
+        with open(filename, "r") as file:
+            lines = file.readlines()
+
+        lines = [line for line in lines if line.strip()]
+
+        with open(filename, "w") as file:
+            file.writelines(lines)
+
+
 main()
+#color input / output viraish / viraish mariz / empty lines in txt file / close file
