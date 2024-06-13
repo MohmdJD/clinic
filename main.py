@@ -186,7 +186,7 @@ def doctor():
                                     print(Fore.RED + "\nfaghat Yes or No.\n" + Fore.RESET)
                                     continue
 
-                                while True:
+                            while True:
                                     option = str(input("\naya mikhahid takhasos pezeshk ra avaz konid?[yes/no]\t"))
                                     if option == 'yes':
                                         specialist = str(input(
@@ -200,9 +200,9 @@ def doctor():
                                                 print(Fore.LIGHTBLUE_EX + i.name + Fore.RESET)
                                         break
 
-                                    # elif option == 'no':
-                                    #     datas += results[0].split(',')[2] + ","
-                                    #     break
+                                    elif option == 'no':
+                                        datas += results[0].split(',')[3] + ","
+                                        break
 
                                     else:
                                         print(Fore.RED + "\nfaghat Yes or No.\n" + Fore.RESET)
@@ -462,13 +462,30 @@ def mariz():
                                         if findIsUser("doctors.txt", code_pezeshk) == "yes":
                                             if datas.split(',')[-1] != code_pezeshk + ';':
                                                 datas += code_pezeshk + ";"
-                                                repeat = input(
-                                                    "\npezeshk digari mikhahid aya?[yes/no]\n").strip().lower()
+                                                repeat = input("\npezeshk digari mikhahid aya?[yes/no]\n").strip().lower()
                                                 if repeat != 'yes':
+                                                    code_pezeshk = str(input("\npezeshke bimar ra vard konid:\t"))
+                                                    if total_checker("integer", code_pezeshk):
+                                                        if findIsUser("doctors.txt", code_pezeshk) == "yes":
+                                                            if datas.split(',')[-1] != code_pezeshk + ';':
+                                                                datas += code_pezeshk + ";"
+                                                                break
+                                                            else:
+                                                                print(
+                                                                    Fore.RED + "\npezeshk tekrari nemitavanad bashad\n" + Fore.RESET)
+                                                                continue
+                                                        else:
+                                                            print(Fore.RED + "\npezeshk mojod nist\n" + Fore.RESET)
+                                                            continue
+                                                    else:
+                                                        print(Fore.RED + "\ncode pezeshk bayad adade sahih bashad\n" + Fore.RESET)
                                                     continue
-                                            else:
-                                                print(Fore.RED + "\npezeshk tekrari nemitavanad bashad\n" + Fore.RESET)
-                                                continue
+                                                elif repeat == 'no':
+                                                    datas += code_pezeshk + ";"
+                                                    break
+                                                else:
+                                                    print(Fore.RED + "\nfaghat Yes or No.\n" + Fore.RESET)
+                                                    continue
                                         else:
                                             print(Fore.RED + "\npezeshk mojod nist\n" + Fore.RESET)
                                             continue
@@ -631,24 +648,12 @@ def empty_lines(filename):
     if filename:
         with open(filename, "r") as file:
             lines = file.readlines()
-            file.close()
+
         lines = [line for line in lines if line.strip()]
 
         with open(filename, "w") as file:
             file.writelines(lines)
             file.close()
-
-
-def read_patient_data(file_path):
-    patient_data = []
-    with open(file_path, 'r') as file:
-        for line in file:
-            line = line.strip()
-            if line:
-                patient_id, name, doctor_numbers = line.split(',')
-                doctors = [doctor for doctor in doctor_numbers.split(';') if doctor]
-                patient_data.append((patient_id, name, doctors))
-    return patient_data
 
 
 def pretty_print_lists_and_search(filename=None, array=None, search_index=None, search_value=None):
@@ -702,4 +707,4 @@ def pretty_print_lists_and_search(filename=None, array=None, search_index=None, 
 
 main()
 
-# joste joi mariz pezeskh / virayesh takhasos pezeshek / hazaf pezeshk -> az doctore mariz hazf bshe / add kard pezesh ke dr tekrari mishe
+# joste joi mariz pezeskh  / hazaf pezeshk -> az doctore mariz hazf bshe / virayesh mariz dar entekhab pezeshk
